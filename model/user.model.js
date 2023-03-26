@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-// const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt')
 
 const db = require('../config/db')
 
@@ -19,20 +19,20 @@ password:{
   
 })
 
-// userShcema.pre("save", async function (){
-//     try {
-//         var user = this;
-//         const salt = await(bcrypt.genSalt(10));
-//         const haspass = await bcrypt.hash(user.password, salt)
-//         user.password = haspass;
-//     }catch(error){
-//         throw error
-//     }
-// });
+userShcema.pre("save", async function (){
+    try {
+        var user = this;
+        const salt = await(bcrypt.genSalt(10));
+        const haspass = await bcrypt.hash(user.password, salt)
+        user.password = haspass;
+    }catch(error){
+        throw error
+    }
+});
 
 userShcema.method.comparePassword = async function(userPassword){
     try{
-        const isMatch = await compare(userPassword, this.password)
+        const isMatch = await bcrypt.compare(userPassword, this.password)
         return isMatch;
     }catch(error){
         throw error
