@@ -1,66 +1,67 @@
 const UserService = require("../services/user.services")
+const { spawn } = require('child_process');
 
-exports.register = async(req, res, next)=>{
-    try{
-        const {email, password} = req.body;
-        console.log(req.body)
-        const successRes = await UserService.registerUser(email, password);
-        res.json({status:true, success:"User registered successfuly"})
-     }catch(error){
-        throw error
-     }
+
+exports.register = async (req, res, next) => {
+   try {
+      const { email, password } = req.body;
+      console.log(req.body)
+      const successRes = await UserService.registerUser(email, password);
+      res.json({ status: true, success: "User registered successfuly" })
+   } catch (error) {
+      throw error
+   }
 }
 
-exports.login = async(req, res, next)=>{
-   try{
-      const {email, password} = req.body;
+exports.login = async (req, res, next) => {
+   try {
+      const { email, password } = req.body;
       if (!email || !password) {
          throw new Error('Parameter are not correct');
-     }
+      }
       const user = await UserService.checkUser(email);
-      if(!user){
+      if (!user) {
          throw new Error('User not exist');
       }
       //
       const isMatch = 1;
       //
-      if (isMatch==false) {
+      if (isMatch == false) {
          throw new Error('Password invalid');
       }
-         
-      let tokenData= {_id:user._id, email:user.email};
-         
-      const token = await UserService.genarateTokken(tokenData, "security",'1h' )
-         console.log("success login")
-      res.status(200).json({status:true, token: token})    }catch(error){
-       throw error
-    }
+
+      let tokenData = { _id: user._id, email: user.email };
+
+      const token = await UserService.genarateTokken(tokenData, "security", '1h')
+      console.log("success login")
+      res.status(200).json({ status: true, token: token })
+   } catch (error) {
+      throw error
+   }
 }
-// exports.login = async(req, res, next)=>{
-//    try{
-//       console.log(ddjk)
-//        const {email, password} = req.body;
-//        console.log(req.body)
 
-//        const user = await UserService.checkUser(email);
+exports.createMel = async (req, res, next) => {
+   try {
+      const environmentName = 'base'
+      const pythonScript = 'controller/script1.py'
+      const command = `conda run -n ${environmentName} python ${pythonScript}`
 
-//        if(!user){
-//          throw new Error('User not exist');
-//        }
+      const pythonProc = spawn(command, { shell: true });
 
-//        const isMatch = await user.comparePassword(password);
-//        if (isMatch==false) {
-//          throw new Error('Password invalid');
-//        }
+      pythonProc.stdout.on('data', (data) => {
+         console.log(`stdout: ${data}`);
+      });
 
-//        let tokenData= {_id:user._id, email:user.email};
+      pythonProc.stderr.on('data', (data) => {
+         console.error(`stderr: ${data}`);
+      });
 
-//        const token = await UserService.genarateTokkenl(tokenData, "security",'1h' )
-
-//       res.status(200).json({status:true, token: token})
-//     }catch(error){
-//       console.log(fff)
-
-//        throw error
-//     }
-// }
+      pythonProc.on('close', (code) => {
+         console.log(`child process exited with code ${code}`);
+      });
+      console.log("Mel Spectrogarm created successfuly")
+      res.json({ status: true, success: "Mel Spectrogarm created successfuly" })
+   } catch (error) {
+      throw error
+   }
+}
