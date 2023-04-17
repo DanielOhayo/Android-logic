@@ -59,9 +59,106 @@ exports.createMel = async (req, res, next) => {
       pythonProc.on('close', (code) => {
          console.log(`child process exited with code ${code}`);
       });
+
       console.log("Mel Spectrogarm created successfuly")
       res.json({ status: true, success: "Mel Spectrogarm created successfuly" })
    } catch (error) {
       throw error
    }
 }
+
+exports.recognizeDB = async (req, res, next) => {
+   try {
+      const { email } = req.body;
+
+      const environmentName = 'base'
+      const pythonScript = 'voice_auth.py'
+      const input = ' -t enroll -n "' + `${email}` + '" -f my_unique_voice.wav'
+      const command_env = `conda activate ${environmentName}`
+
+      const pythonProc1 = spawn(command_env, { shell: true });
+
+      pythonProc1.stdout.on('data', (data) => {
+         console.log(`stdout: ${data}`);
+      });
+
+      pythonProc1.stderr.on('data', (data) => {
+         console.error(`stderr: ${data}`);
+      });
+
+      pythonProc1.on('close', (code) => {
+         console.log(`child process exited with code ${code}`);
+      });
+
+      const command = `python ${pythonScript} ${input}`
+
+      const pythonProc2 = spawn(command, { shell: true });
+      pythonProc2.stdout.on('data', (data) => {
+         console.log(`stdout: ${data}`);
+      });
+
+      pythonProc2.stderr.on('data', (data) => {
+         console.error(`stderr: ${data}`);
+      });
+
+      pythonProc2.on('close', (code) => {
+         console.log(`child process exited with code ${code}`);
+      });
+
+
+      console.log("RecognizeCheck function done successfuly")
+      res.json({ status: true, success: "Mel Spectrogarm created successfuly" })
+
+   } catch (error) {
+      throw error
+   }
+
+
+
+}
+
+exports.recognize = async (req, res, next) => {
+   try {
+      const environmentName = 'base'
+      const pythonScript = 'voice_auth.py'
+      const input = ' -t recognize -f my_unique_voice.wav'
+      const command_env = `conda activate ${environmentName}`
+
+      const pythonProc1 = spawn(command_env, { shell: true });
+
+      pythonProc1.stdout.on('data', (data) => {
+         console.log(`stdout: ${data}`);
+      });
+
+      pythonProc1.stderr.on('data', (data) => {
+         console.error(`stderr: ${data}`);
+      });
+
+      pythonProc1.on('close', (code) => {
+         console.log(`child process exited with code ${code}`);
+      });
+
+      const command = `python ${pythonScript} ${input}`
+
+      const pythonProc2 = spawn(command, { shell: true });
+      pythonProc2.stdout.on('data', (data) => {
+         console.log(`stdout: ${data}`);
+      });
+
+      pythonProc2.stderr.on('data', (data) => {
+         console.error(`stderr: ${data}`);
+      });
+
+      pythonProc2.on('close', (code) => {
+         console.log(`child process exited with code ${code}`);
+      });
+
+
+      console.log("Recognize function done successfuly")
+      res.json({ status: true, success: "Mel Spectrogarm created successfuly" })
+
+   } catch (error) {
+      throw error
+   }
+}
+

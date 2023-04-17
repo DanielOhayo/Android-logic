@@ -12,9 +12,19 @@ import os  # interface with underlying OS that python is running on
 import sys
 import warnings
 import soundfile as sf
-# "C:\Users\ohayo\AppData\Local\Google\AndroidStudio2022.1\device-explorer\samsung-sm_g960f-2ab8a93c423f7ece\data\data\com.example.flutter_dev\cache\audio.aac"
+import ffmpeg
+input_file = 'C:/Users/ohayo/AppData/Local/Google/AndroidStudio2022.1/device-explorer/Nexus_6P_Edited_API_33 [emulator-5554]/data/data/com.example.flutter_dev/cache/audio.aac'
+output_file = 'my_unique_voice.wav'
+
+(
+    ffmpeg
+    .input(input_file, format='aac')
+    .output(output_file, format='wav')
+    .run()
+)
+
 x, sr = librosa.load(
-    '/Users/ohayo/Desktop/Folders/Study/audio_speech_actors_01-24/Actor_01/03-01-01-01-01-01-01.wav')
+    'my_unique_voice.wav')
 # DISPLAY WAVEPLOT
 plt.figure(figsize=(8, 4))
 librosa.display.waveshow(x, sr=sr)
