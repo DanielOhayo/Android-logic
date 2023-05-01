@@ -40,11 +40,12 @@ exports.login = async (req, res, next) => {
    }
 }
 
-exports.createMel = async (req, res, next) => {
+exports.recognizeDB = async (req, res, next) => {
    try {
-      const environmentName = 'base'
-      const pythonScript = 'controller/script1.py'
-      const command = `conda run -n ${environmentName} python ${pythonScript}`
+      const { email } = req.body; //the name of user
+      const pythonScript = 'voice_auth.py'
+      const input = ' -t enroll -n "' + `${email}` + '" -f my_unique_voice.wav'
+      const command = `python ${pythonScript} ${input}`
 
       const pythonProc = spawn(command, { shell: true });
 
@@ -60,68 +61,18 @@ exports.createMel = async (req, res, next) => {
          console.log(`child process exited with code ${code}`);
       });
 
-      console.log("Mel Spectrogarm created successfuly")
-      res.json({ status: true, success: "Mel Spectrogarm created successfuly" })
+      console.log(" function done successfuly")
+      res.json({ status: true, success: "Recognition recognition have made successfuly" })
    } catch (error) {
       throw error
    }
-}
-
-exports.recognizeDB = async (req, res, next) => {
-   try {
-      const { email } = req.body;
-
-      const environmentName = 'base'
-      const pythonScript = 'voice_auth.py'
-      const input = ' -t enroll -n "' + `${email}` + '" -f my_unique_voice.wav'
-      const command_env = `conda activate ${environmentName}`
-
-      const pythonProc1 = spawn(command_env, { shell: true });
-
-      pythonProc1.stdout.on('data', (data) => {
-         console.log(`stdout: ${data}`);
-      });
-
-      pythonProc1.stderr.on('data', (data) => {
-         console.error(`stderr: ${data}`);
-      });
-
-      pythonProc1.on('close', (code) => {
-         console.log(`child process exited with code ${code}`);
-      });
-
-      const command = `python ${pythonScript} ${input}`
-
-      const pythonProc2 = spawn(command, { shell: true });
-      pythonProc2.stdout.on('data', (data) => {
-         console.log(`stdout: ${data}`);
-      });
-
-      pythonProc2.stderr.on('data', (data) => {
-         console.error(`stderr: ${data}`);
-      });
-
-      pythonProc2.on('close', (code) => {
-         console.log(`child process exited with code ${code}`);
-      });
-
-
-      console.log("RecognizeCheck function done successfuly")
-      res.json({ status: true, success: "Mel Spectrogarm created successfuly" })
-
-   } catch (error) {
-      throw error
-   }
-
-
-
 }
 
 exports.recognize = async (req, res, next) => {
    try {
       const environmentName = 'base'
       const pythonScript = 'voice_auth.py'
-      const input = ' -t recognize -f my_unique_voice.wav'
+      const input = ' -t recognize -f my_unique_voice_check.wav'
       const command_env = `conda activate ${environmentName}`
 
       const pythonProc1 = spawn(command_env, { shell: true });
@@ -162,3 +113,29 @@ exports.recognize = async (req, res, next) => {
    }
 }
 
+exports.emotion = async (req, res, next) => {
+   try {
+      const environmentName = 'base'
+      const pythonScript = 'predict.py'
+      const command = `conda run -n ${environmentName} python ${pythonScript}`
+
+      const pythonProc = spawn(command, { shell: true });
+
+      pythonProc.stdout.on('data', (data) => {
+         console.log(`stdout: ${data}`);
+      });
+
+      pythonProc.stderr.on('data', (data) => {
+         console.error(`stderr: ${data}`);
+      });
+
+      pythonProc.on('close', (code) => {
+         console.log(`child process exited with code ${code}`);
+      });
+
+      console.log("Emotion recognition have made successfuly")
+      res.json({ status: true, success: "Emotion recognition have made successfuly" })
+   } catch (error) {
+      throw error
+   }
+}
