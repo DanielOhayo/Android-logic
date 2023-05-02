@@ -49,7 +49,7 @@ def enroll(name, file):
         ffmpeg
         .input(input_file, format='aac')
         .output(output_file, format='wav')
-        .run()
+        .run(cmd=['ffmpeg', '-y'])
     )
     """Enroll a user with an audio file
         inputs: str (Name of the person to be enrolled and registered)
@@ -116,7 +116,7 @@ def recognize(file):
         ffmpeg
         .input(input_file, format='aac')
         .output(output_file, format='wav')
-        .run()
+        .run(cmd=['ffmpeg', '-y'])
     )
     """Recognize the input audio file by comparing to saved users' voice prints
         inputs: str (Path to audio file of unknown person to recognize)
