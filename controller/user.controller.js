@@ -1,13 +1,14 @@
 const UserService = require("../services/user.services")
 const { spawn } = require('child_process');
+const fs = require('fs');
 
 
 
 exports.register = async (req, res, next) => {
    try {
-      const { email, password } = req.body;
+      const { email, password } = req.body
       console.log(req.body)
-      const successRes = await UserService.registerUser(email, password);
+      const successRes = await UserService.registerUser(email, password, 'audioFile');
       res.json({ status: true, success: "User registered successfuly" })
    } catch (error) {
       throw error
@@ -18,24 +19,29 @@ exports.login = async (req, res, next) => {
    try {
       const { email, password } = req.body;
       if (!email || !password) {
-         throw new Error('Parameter are not correct');
+         res.status(200).json({ status: false, success: 'Parameter are not correct' })
+         console.log('Parameter are not correct')
+         return
       }
       const user = await UserService.checkUser(email);
       if (!user) {
-         throw new Error('User not exist');
+         res.status(200).json({ status: false, success: 'User not exist' })
+         console.log('User not exist')
+         return
       }
       //
       const isMatch = 1;
       //
       if (isMatch == false) {
-         throw new Error('Password invalid');
+         res.status(200).json({ status: false, success: 'Password invalid' })
+         console.log('Password invalid')
+         return
       }
 
       let tokenData = { _id: user._id, email: user.email };
-
       const token = await UserService.genarateTokken(tokenData, "security", '1h')
       console.log("success login")
-      res.status(200).json({ status: true, token: token })
+      res.status(200).json({ status: true, token: token, success: 'Success login' })
    } catch (error) {
       throw error
    }
@@ -44,13 +50,53 @@ exports.login = async (req, res, next) => {
 exports.recognizeDB = async (req, res, next) => {
    try {
       const { email } = req.body; //the name of user
+      console.log(email)
       const pythonScript = 'voice_auth.py'
       const input = ' -t enroll -n "' + `${email}` + '" -f my_unique_voice.wav'
       const command = `python ${pythonScript} ${input}`
+      let retStatus = false;
 
       const pythonProc = spawn(command, { shell: true });
 
       pythonProc.stdout.on('data', (data) => {
+         if (data = "Succesfully enrolled the user") {
+            retStatus = true;
+         } else {
+            retStatus = false;
+         }
+         console.log(`stdout: ${data} + ${retStatus}`);
+      });
+
+      pythonProc.stderr.on('data', (data) => {
+         console.error(`stderr: ${data}`);
+      });
+
+      pythonProc.on('close', (code) => {
+         console.log(" function done successfuly")
+         res.json({ status: retStatus })
+         UserService.editUserAudioFile(email, 'my_unique_voice.wav')
+         console.log(`child process exited with code ${code}`);
+      });
+
+   } catch (error) {
+      throw error
+   }
+}
+
+exports.recognize = async (req, res, next) => {
+   try {
+      const { email } = req.body; //the name of user
+      const pythonScript = 'voice_auth.py'
+      const input = ' -t recognize -f my_unique_voice_check.wav'
+      const command = `python ${pythonScript} ${input}`
+      let retStatus = false;
+
+      const pythonProc = spawn(command, { shell: true });
+
+      pythonProc.stdout.on('data', (data) => {
+         if (data = `Recognized:  ${email}`) {
+            retStatus = true
+         }
          console.log(`stdout: ${data}`);
       });
 
@@ -60,54 +106,11 @@ exports.recognizeDB = async (req, res, next) => {
 
       pythonProc.on('close', (code) => {
          console.log(`child process exited with code ${code}`);
+         console.log("Recognize function done successfuly")
+         res.json({ status: retStatus })
+
       });
 
-      console.log(" function done successfuly")
-      res.json({ status: true, success: "Recognition recognition have made successfuly" })
-   } catch (error) {
-      throw error
-   }
-}
-
-exports.recognize = async (req, res, next) => {
-   try {
-      const environmentName = 'base'
-      const pythonScript = 'voice_auth.py'
-      const input = ' -t recognize -f my_unique_voice_check.wav'
-      const command_env = `conda activate ${environmentName}`
-
-      const pythonProc1 = spawn(command_env, { shell: true });
-
-      pythonProc1.stdout.on('data', (data) => {
-         console.log(`stdout: ${data}`);
-      });
-
-      pythonProc1.stderr.on('data', (data) => {
-         console.error(`stderr: ${data}`);
-      });
-
-      pythonProc1.on('close', (code) => {
-         console.log(`child process exited with code ${code}`);
-      });
-
-      const command = `python ${pythonScript} ${input}`
-
-      const pythonProc2 = spawn(command, { shell: true });
-      pythonProc2.stdout.on('data', (data) => {
-         console.log(`stdout: ${data}`);
-      });
-
-      pythonProc2.stderr.on('data', (data) => {
-         console.error(`stderr: ${data}`);
-      });
-
-      pythonProc2.on('close', (code) => {
-         console.log(`child process exited with code ${code}`);
-      });
-
-
-      console.log("Recognize function done successfuly")
-      res.json({ status: true, success: "Mel Spectrogarm created successfuly" })
 
    } catch (error) {
       throw error

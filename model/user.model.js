@@ -1,11 +1,9 @@
 const mongoose = require('mongoose')
 
-const fs = require('fs');
-
-
 const bcrypt = require('bcrypt')
 
 const db = require('../config/db')
+
 
 const { Schema } = mongoose;
 
@@ -19,9 +17,12 @@ const userShcema = new Schema({
     password: {
         type: String,
         required: true
+    },
+    audioFile: {
+        type: String,
+        required: true
     }
 })
-
 
 userShcema.pre("save", async function () {
     try {
