@@ -30,6 +30,19 @@ class UserService {
         }
     }
 
+    static async checkDoneLevels(email) {
+        try {
+            console.log(email)
+            const user = UserModel.findOne({ email })
+            if (user.email != "default") {
+                return true;
+            }
+            return false;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     static async genarateTokken(tokenData, security, jwt_expire) {
         return jwt.sign(tokenData, security, { expiresIn: jwt_expire })
     }

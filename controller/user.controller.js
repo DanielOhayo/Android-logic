@@ -143,3 +143,14 @@ exports.emotion = async (req, res, next) => {
       throw error
    }
 }
+
+exports.levels = async (req, res, next) => {
+   try {
+      const { email } = req.body;
+      const isDoneLevels = await UserService.checkDoneLevels(email)
+      console.log("check done levels " + isDoneLevels)
+      res.json({ status: isDoneLevels, success: "check done levels" })
+   } catch (error) {
+      throw error
+   }
+}
