@@ -49,7 +49,8 @@ exports.login = async (req, res, next) => {
 
 exports.recognizeDB = async (req, res, next) => {
    try {
-      const { email } = req.body; //the name of user
+      const { email, file } = req.body; //the name of user
+      createWevFile(file)
       console.log(email)
       const pythonScript = 'voice_auth.py'
       const input = ' -t enroll -n "' + `${email}` + '" -f my_unique_voice.wav'
@@ -83,11 +84,32 @@ exports.recognizeDB = async (req, res, next) => {
    }
 }
 
+createWevFile = async (fileName) => {
+   const pythonScript = 'create_wev_file.py'
+   const input = fileName
+   const command = `python ${pythonScript} ${input}`
+
+   const pythonProc = spawn(command, { shell: true });
+
+   pythonProc.stdout.on('data', (data) => {
+      console.log(`stdout: ${data}`);
+   });
+
+   pythonProc.stderr.on('data', (data) => {
+      console.error(`stderr: ${data}`);
+   });
+
+   pythonProc.on('close', (code) => {
+      console.log(`child process exited with code ${code}`);
+   });
+}
+
 exports.recognize = async (req, res, next) => {
    try {
-      const { email } = req.body; //the name of user
+      const { email, file } = req.body; //the name of user
+      createWevFile(file);
       const pythonScript = 'voice_auth.py'
-      const input = ' -t recognize -f my_unique_voice_check.wav'
+      const input = ' -t recognize -f my_unique_voice.wav'
       const command = `python ${pythonScript} ${input}`
       let retStatus = false;
 

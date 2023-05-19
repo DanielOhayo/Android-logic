@@ -43,14 +43,6 @@ def args():
 
 
 def enroll(name, file):
-    input_file = 'C:/Users/ohayo/AppData/Local/Google/AndroidStudio2022.1/device-explorer/Nexus_6P_Edited_API_33 [emulator-5554]/data/data/com.example.flutter_dev/cache/audio.aac'
-    output_file = 'my_unique_voice.wav'
-    (
-        ffmpeg
-        .input(input_file, format='aac')
-        .output(output_file, format='wav')
-        .run(cmd=['ffmpeg', '-y'])
-    )
     """Enroll a user with an audio file
         inputs: str (Name of the person to be enrolled and registered)
                 str (Path to the audio file of the person to enroll)
@@ -110,14 +102,6 @@ def enroll_csv(csv_file):
 
 
 def recognize(file):
-    input_file = 'C:/Users/ohayo/AppData/Local/Google/AndroidStudio2022.1/device-explorer/Nexus_6P_Edited_API_33 [emulator-5554]/data/data/com.example.flutter_dev/cache/audioCheck.aac'
-    output_file = 'my_unique_voice_check.wav'
-    (
-        ffmpeg
-        .input(input_file, format='aac')
-        .output(output_file, format='wav')
-        .run(cmd=['ffmpeg', '-y'])
-    )
     """Recognize the input audio file by comparing to saved users' voice prints
         inputs: str (Path to audio file of unknown person to recognize)
         outputs: str (Name of the person recognized)"""

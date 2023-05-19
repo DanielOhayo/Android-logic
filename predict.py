@@ -2,20 +2,6 @@ import librosa
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-import ffmpeg
-
-
-input_file = 'C:/Users/ohayo/AppData/Local/Google/AndroidStudio2022.1/device-explorer/Nexus_6P_Edited_API_33 [emulator-5554]/data/data/com.example.flutter_dev/cache/audio_5_sec.aac'
-output_file = 'my_emotion_voice_check.wav'
-(
-    ffmpeg
-    .input(input_file, format='aac')
-    .output(output_file, format='wav')
-    .run(cmd=['ffmpeg', '-y'])
-)
-
-
-# Load the audio file and extract features
 
 
 def extract_features(file_path):
@@ -32,7 +18,7 @@ def extract_features(file_path):
 model = tf.keras.models.load_model('Emotion_Voice_Detection_Model.h5')
 model.summary()
 # Load the audio file and extract features
-audio_file = 'C:\\Users\\ohayo\\Desktop\\Folders\\Android inrerface\\my_emotion_voice_check.wav'
+audio_file = 'C:\\Users\\ohayo\\Desktop\\Folders\\Android inrerface\\my_unique_voice.wav'
 features = extract_features(audio_file)
 print(features.shape)
 
