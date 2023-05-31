@@ -18,6 +18,10 @@ const userShcema = new Schema({
         type: String,
         required: true
     },
+    emergencyNumber: {
+        type: String,
+        required: true
+    },
     audioFile: {
         type: String,
         required: true

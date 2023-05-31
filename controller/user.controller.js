@@ -6,9 +6,9 @@ const fs = require('fs');
 
 exports.register = async (req, res, next) => {
    try {
-      const { email, password } = req.body
+      const { email, password, emergencyNumber } = req.body
       console.log(req.body)
-      const successRes = await UserService.registerUser(email, password, 'audioFile');
+      const successRes = await UserService.registerUser(email, password, emergencyNumber, 'audioFile');
       res.json({ status: true, success: "User registered successfuly" })
    } catch (error) {
       throw error

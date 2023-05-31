@@ -3,9 +3,9 @@ const jwt = require('jsonwebtoken');
 const { search } = require('../app');
 
 class UserService {
-    static async registerUser(email, password, audioFile) {
+    static async registerUser(email, password, emergencyNumber, audioFile) {
         try {
-            const createUser = new UserModel({ email, password, audioFile });
+            const createUser = new UserModel({ email, password, emergencyNumber, audioFile });
             return await createUser.save();
         } catch (error) {
             throw error;
