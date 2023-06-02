@@ -8,9 +8,6 @@ router.post('/recognizeDB', UserController.recognizeDB)
 router.post('/recognize', UserController.recognize)
 router.post('/emotion', UserController.emotion)
 router.post('/levels', UserController.levels)
-
-
-
-
+router.post('/emergencyNum', UserController.emergencyNum)
 
 module.exports = router

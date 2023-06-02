@@ -33,11 +33,34 @@ class UserService {
     static async checkDoneLevels(email) {
         try {
             console.log(email)
-            const user = UserModel.findOne({ email })
-            if (user.email != "default") {
+            const user = await UserModel.findOne({ email })
+            console.log("dani " + user.audioFile)
+            if (user.audioFile != "default") {
                 return true;
             }
             return false;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    static async getEmergencyNumber(email) {
+        try {
+            console.log(email)
+            const user = await UserModel.findOne({ email })
+            console.log("dani " + user.emergencyNumber)
+            return user.emergencyNumber;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    static async modifyEmergencyNumber(email, emergencyNumber) {
+        try {
+            console.log(email)
+            const user = await UserModel.findOne({ email })
+            console.log("dani " + user.emergencyNumber)
+            await user.updateOne({ emergencyNumber: emergencyNumber })
         } catch (error) {
             throw error;
         }

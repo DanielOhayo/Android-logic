@@ -36,6 +36,10 @@ prediction = model.predict(feat)
 emotion_labels = ['angry', 'calm', 'disgust',
                   'fear', 'happy', 'neutral', 'sad', 'surprise']
 emotion_index = np.argmax(prediction)
+print(emotion_index)
+if emotion_index > 8:
+    emotion_index = 6
+
 emotion_label = emotion_labels[emotion_index-1]
 
 print('Predicted emotion:', emotion_label)

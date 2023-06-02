@@ -8,7 +8,7 @@ exports.register = async (req, res, next) => {
    try {
       const { email, password, emergencyNumber } = req.body
       console.log(req.body)
-      const successRes = await UserService.registerUser(email, password, emergencyNumber, 'audioFile');
+      const successRes = await UserService.registerUser(email, password, emergencyNumber, 'default');
       res.json({ status: true, success: "User registered successfuly" })
    } catch (error) {
       throw error
@@ -132,18 +132,17 @@ exports.recognize = async (req, res, next) => {
          res.json({ status: retStatus })
 
       });
-
-
    } catch (error) {
       throw error
    }
 }
 
 exports.emotion = async (req, res, next) => {
+   const { email } = req.body;
+   const emergencyNumber = await UserService.getEmergencyNumber(email)
    try {
-      const environmentName = 'base'
       const pythonScript = 'predict.py'
-      const command = `conda run -n ${environmentName} python ${pythonScript}`
+      const command = `python ${pythonScript}`
 
       const pythonProc = spawn(command, { shell: true });
 
@@ -157,10 +156,12 @@ exports.emotion = async (req, res, next) => {
 
       pythonProc.on('close', (code) => {
          console.log(`child process exited with code ${code}`);
+         console.log("Emotion recognition have made successfuly")
+         res.json({ status: true, success: "Emotion recognition have made successfuly", emergencyNumber: emergencyNumber })
       });
 
-      console.log("Emotion recognition have made successfuly")
-      res.json({ status: true, success: "Emotion recognition have made successfuly" })
+
+
    } catch (error) {
       throw error
    }
@@ -172,6 +173,18 @@ exports.levels = async (req, res, next) => {
       const isDoneLevels = await UserService.checkDoneLevels(email)
       console.log("check done levels " + isDoneLevels)
       res.json({ status: isDoneLevels, success: "check done levels" })
+   } catch (error) {
+      throw error
+   }
+}
+
+
+exports.emergencyNum = async (req, res, next) => {
+   try {
+      const { email, emergencyNumber } = req.body;
+      console.log(emergencyNumber)
+      await UserService.modifyEmergencyNumber(email, emergencyNumber)
+      res.json({ status: true, success: "checnged number" })
    } catch (error) {
       throw error
    }
