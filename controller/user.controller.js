@@ -116,7 +116,9 @@ exports.recognize = async (req, res, next) => {
       const pythonProc = spawn(command, { shell: true });
 
       pythonProc.stdout.on('data', (data) => {
-         if (data = `Recognized:  ${email}`) {
+         console.log(`dani + ${data}`);
+         if (data.includes(`Recognized:  ${email}`)) {
+            console.log("inside")
             retStatus = true
          }
          console.log(`stdout: ${data}`);
@@ -140,6 +142,7 @@ exports.recognize = async (req, res, next) => {
 exports.emotion = async (req, res, next) => {
    const { email } = req.body;
    const emergencyNumber = await UserService.getEmergencyNumber(email)
+   let retStatus = false;
    try {
       const pythonScript = 'predict.py'
       const command = `python ${pythonScript}`
@@ -147,6 +150,11 @@ exports.emotion = async (req, res, next) => {
       const pythonProc = spawn(command, { shell: true });
 
       pythonProc.stdout.on('data', (data) => {
+         if (data.includes(`Predicted emotion: female_fearful`)
+            || data.includes(`Predicted emotion: male_fearful`)) {
+            retStatus = true
+            console.log("inside")
+         }
          console.log(`stdout: ${data}`);
       });
 
@@ -157,7 +165,7 @@ exports.emotion = async (req, res, next) => {
       pythonProc.on('close', (code) => {
          console.log(`child process exited with code ${code}`);
          console.log("Emotion recognition have made successfuly")
-         res.json({ status: true, success: "Emotion recognition have made successfuly", emergencyNumber: emergencyNumber })
+         res.json({ status: retStatus, success: "Emotion recognition have made successfuly", emergencyNumber: emergencyNumber })
       });
 
 
@@ -177,7 +185,6 @@ exports.levels = async (req, res, next) => {
       throw error
    }
 }
-
 
 exports.emergencyNum = async (req, res, next) => {
    try {

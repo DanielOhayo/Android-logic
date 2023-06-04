@@ -15,10 +15,11 @@ def extract_features(file_path):
 
 
 # Load the model
-model = tf.keras.models.load_model('Emotion_Voice_Detection_Model.h5')
+model = tf.keras.models.load_model(
+    'Emotion_Voice_Detection_Model.h5')
 model.summary()
 # Load the audio file and extract features
-audio_file = 'C:\\Users\\ohayo\\Desktop\\Folders\\Android inrerface\\my_unique_voice.wav'
+audio_file = 'my_unique_voice.wav'
 features = extract_features(audio_file)
 print(features.shape)
 
@@ -33,14 +34,13 @@ prediction = model.predict(feat)
 # prediction = model.predict(np.expand_dims(features, axis=0))
 
 # Map the prediction to an emotion label
-emotion_labels = ['angry', 'calm', 'disgust',
-                  'fear', 'happy', 'neutral', 'sad', 'surprise']
+emotion_labels = ['female_angry', 'female_calm', 'female_fearful',
+                  'female_happy', 'female_sad', 'male_angry', 'male_calm', 'male_fearful',
+                  'male_happy', 'male_sad']
 emotion_index = np.argmax(prediction)
 print(emotion_index)
-if emotion_index > 8:
-    emotion_index = 6
 
-emotion_label = emotion_labels[emotion_index-1]
+emotion_label = emotion_labels[emotion_index]
 
 print('Predicted emotion:', emotion_label)
 
