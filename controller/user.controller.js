@@ -8,8 +8,15 @@ exports.register = async (req, res, next) => {
    try {
       const { email, password, emergencyNumber } = req.body
       console.log(req.body)
+
+      if (!email || !password || !emergencyNumber) {
+         res.status(200).json({ status: false, success: 'Parameter are not correct' })
+         console.log('Parameter are not correct')
+         return
+      }
       const successRes = await UserService.registerUser(email, password, emergencyNumber, 'default');
-      res.json({ status: true, success: "User registered successfuly" })
+      console.log(successRes)
+      res.json({ status: successRes, success: "Email already exist" })
    } catch (error) {
       throw error
    }
@@ -30,7 +37,7 @@ exports.login = async (req, res, next) => {
          return
       }
       //
-      const isMatch = 1;
+      const isMatch = await UserService.checkPassword(email, password)
       //
       if (isMatch == false) {
          res.status(200).json({ status: false, success: 'Password invalid' })
@@ -117,7 +124,8 @@ exports.recognize = async (req, res, next) => {
 
       pythonProc.stdout.on('data', (data) => {
          console.log(`dani + ${data}`);
-         if (data.includes(`Recognized:  ${email}`)) {
+         if (data = `Recognized:  ${email}`) {
+            // if (data.includes(`Recognized:  ${email}`)) {
             console.log("inside")
             retStatus = true
          }

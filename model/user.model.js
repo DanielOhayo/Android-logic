@@ -28,16 +28,16 @@ const userShcema = new Schema({
     }
 })
 
-userShcema.pre("save", async function () {
-    try {
-        var user = this;
-        const salt = await (bcrypt.genSalt(10));
-        const haspass = await bcrypt.hash(user.password, salt)
-        user.password = haspass;
-    } catch (error) {
-        throw error
-    }
-});
+// userShcema.pre("save", async function () {
+//     try {
+//         var user = this;
+//         const salt = await (bcrypt.genSalt(10));
+//         const haspass = await bcrypt.hash(user.password, salt)
+//         user.password = haspass;
+//     } catch (error) {
+//         throw error
+//     }
+// });
 
 userShcema.method.comparePassword = async function (userPassword) {
     try {

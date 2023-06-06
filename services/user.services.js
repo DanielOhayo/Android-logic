@@ -5,8 +5,14 @@ const { search } = require('../app');
 class UserService {
     static async registerUser(email, password, emergencyNumber, audioFile) {
         try {
-            const createUser = new UserModel({ email, password, emergencyNumber, audioFile });
-            return await createUser.save();
+            console.log(await UserModel.findOne({ email }))
+            if (await UserModel.findOne({ email }) == null) {
+                console.log("nukk")
+                const createUser = new UserModel({ email, password, emergencyNumber, audioFile });
+                const newUser = await createUser.save();
+                return true
+            }
+            return false
         } catch (error) {
             throw error;
         }
@@ -15,6 +21,18 @@ class UserService {
     static async checkUser(email) {
         try {
             return await UserModel.findOne({ email });
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    static async checkPassword(email, password) {
+        try {
+            const user = await UserModel.findOne({ email });
+            console.log(user.password + " " + password)
+            console.log(user.password === password)
+
+            return user.password === password
         } catch (error) {
             throw error;
         }
