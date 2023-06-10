@@ -59,8 +59,8 @@ exports.recognizeDB = async (req, res, next) => {
       const { email, file } = req.body; //the name of user
       createWevFile(file)
       console.log(email)
-      const pythonScript = 'voice_auth.py'
-      const input = ' -t enroll -n "' + `${email}` + '" -f my_unique_voice.wav'
+      const pythonScript = 'predict\\voice_auth.py'
+      const input = ' -t enroll -n "' + `${email}` + '" -f predict\\my_unique_voice.wav'
       const command = `python ${pythonScript} ${input}`
       let retStatus = false;
 
@@ -115,8 +115,8 @@ exports.recognize = async (req, res, next) => {
    try {
       const { email, file } = req.body; //the name of user
       createWevFile(file);
-      const pythonScript = 'voice_auth.py'
-      const input = ' -t recognize -f my_unique_voice.wav'
+      const pythonScript = 'predict\\voice_auth.py'
+      const input = ' -t recognize -f predict\\my_unique_voice.wav'
       const command = `python ${pythonScript} ${input}`
       let retStatus = false;
 
@@ -124,7 +124,7 @@ exports.recognize = async (req, res, next) => {
 
       pythonProc.stdout.on('data', (data) => {
          console.log(`dani + ${data}`);
-         if (data = `Recognized:  ${email}`) {
+         if (data == `Recognized:  ${email}`) {
             // if (data.includes(`Recognized:  ${email}`)) {
             console.log("inside")
             retStatus = true
@@ -152,7 +152,7 @@ exports.emotion = async (req, res, next) => {
    const emergencyNumber = await UserService.getEmergencyNumber(email)
    let retStatus = false;
    try {
-      const pythonScript = 'predict.py'
+      const pythonScript = 'predict\\predict.py'
       const command = `python ${pythonScript}`
 
       const pythonProc = spawn(command, { shell: true });

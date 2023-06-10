@@ -21,7 +21,7 @@ def extract_features(file_path):
 model = tf.keras.models.load_model('Emotion_Voice_Detection_Model.h5')
 model.summary()
 # Load the audio file and extract features
-audio_file = 'C:\\Users\\ohayo\\Desktop\\Folders\\Android inrerface\\my_unique_voice.wav'
+audio_file = 'predict\\my_unique_voice.wav'
 features = extract_features(audio_file)
 print(features.shape)
 
